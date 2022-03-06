@@ -14,7 +14,7 @@ webhooks:
   clientConfig:
     service:
       name: nri-bundle-nri-metadata-injection
-      namespace: newrelic
+      namespace: default
       path: "/mutate"
     caBundle: ""
   rules:
@@ -33,7 +33,7 @@ webhooks:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  namespace: newrelic
+  namespace: default
   labels:     
     app: newrelic-infrastructure
     chart: newrelic-infrastructure-2.8.0
@@ -127,7 +127,7 @@ spec:
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  namespace: newrelic
+  namespace: default
   labels:     
     app: newrelic-logging
     chart: newrelic-logging-1.10.8
@@ -221,7 +221,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nri-bundle-kube-state-metrics
-  namespace: newrelic
+  namespace: default
   labels:
     app.kubernetes.io/name: kube-state-metrics
     helm.sh/chart: "kube-state-metrics-2.13.2"
@@ -357,7 +357,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nri-bundle-nri-kube-events
-  namespace: newrelic
+  namespace: default
   labels:
     app: nri-kube-events
     app.kubernetes.io/name: nri-kube-events
@@ -443,7 +443,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nri-bundle-nri-metadata-injection
-  namespace: newrelic
+  namespace: default
   labels:
     app.kubernetes.io/name: nri-metadata-injection
     helm.sh/chart: nri-metadata-injection-2.2.0
@@ -501,7 +501,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: nri-bundle-nri-metadata-injection-admission-create
-  namespace: newrelic
+  namespace: default
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -528,8 +528,8 @@ spec:
           imagePullPolicy: IfNotPresent
           args:
             - create
-            - --host=nri-bundle-nri-metadata-injection,nri-bundle-nri-metadata-injection.newrelic.svc
-            - --namespace=newrelic
+            - --host=nri-bundle-nri-metadata-injection,nri-bundle-nri-metadata-injection.default.svc
+            - --namespace=default
             - --secret-name=nri-bundle-nri-metadata-injection-admission
             - --cert-name=tls.crt
             - --key-name=tls.key
@@ -545,7 +545,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: nri-bundle-nri-metadata-injection-admission-patch
-  namespace: newrelic
+  namespace: default
   annotations:
     "helm.sh/hook": post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -573,7 +573,7 @@ spec:
           args:
             - patch
             - --webhook-name=nri-bundle-nri-metadata-injection
-            - --namespace=newrelic
+            - --namespace=default
             - --secret-name=nri-bundle-nri-metadata-injection-admission
             - --patch-failure-policy=Ignore
             - --patch-validating=false
@@ -883,7 +883,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: nri-bundle-kube-state-metrics
-  namespace: newrelic
+  namespace: default
 ---
 # Source: nri-bundle/charts/nri-kube-events/templates/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -903,7 +903,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: nri-bundle-nri-kube-events
-  namespace: newrelic
+  namespace: default
 ---
 # Source: nri-bundle/charts/newrelic-infrastructure/templates/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -922,7 +922,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: nri-bundle-newrelic-infrastructure
-  namespace: newrelic
+  namespace: default
 ---
 # Source: nri-bundle/charts/newrelic-logging/templates/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -941,7 +941,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: nri-bundle-newrelic-logging
-  namespace: newrelic
+  namespace: default
 ---
 # Source: nri-bundle/charts/nri-metadata-injection/templates/admission-webhooks/job-patch/clusterrolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -964,14 +964,14 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: nri-bundle-nri-metadata-injection-admission
-    namespace: newrelic
+    namespace: default
 ---
 # Source: nri-bundle/charts/nri-metadata-injection/templates/admission-webhooks/job-patch/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: nri-bundle-nri-metadata-injection-admission
-  namespace: newrelic
+  namespace: default
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -995,7 +995,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: nri-bundle-nri-metadata-injection-admission
-  namespace: newrelic
+  namespace: default
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -1012,7 +1012,7 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: nri-bundle-nri-metadata-injection-admission
-    namespace: newrelic
+    namespace: default
 ---
 # Source: nri-bundle/charts/nri-kube-events/templates/configmap.yaml
 apiVersion: v1
@@ -1027,7 +1027,7 @@ data:
         agentHTTPTimeout: 30s
 metadata:
   name: nri-bundle-nri-kube-events-config
-  namespace: newrelic
+  namespace: default
   labels:
     app: nri-kube-events
     app.kubernetes.io/name: nri-kube-events
@@ -1039,7 +1039,7 @@ metadata:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: newrelic
+  namespace: default
   labels:     
     app: newrelic-logging
     chart: newrelic-logging-1.10.8
@@ -1121,7 +1121,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: nri-bundle-nri-kube-events-config
-  namespace: newrelic
+  namespace: default
   labels:
     app: nri-kube-events
     app.kubernetes.io/name: nri-kube-events
@@ -1136,7 +1136,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  namespace: newrelic
+  namespace: default
   labels:     
     app: newrelic-infrastructure
     chart: newrelic-infrastructure-2.8.0
@@ -1151,7 +1151,7 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  namespace: newrelic
+  namespace: default
   labels:     
     app: newrelic-logging
     chart: newrelic-logging-1.10.8
@@ -1167,7 +1167,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nri-bundle-kube-state-metrics
-  namespace: newrelic
+  namespace: default
   labels:
     app.kubernetes.io/name: kube-state-metrics
     helm.sh/chart: "kube-state-metrics-2.13.2"
@@ -1191,7 +1191,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: nri-bundle-nri-metadata-injection
-  namespace: newrelic
+  namespace: default
   labels:
     app.kubernetes.io/name: nri-metadata-injection
     helm.sh/chart: nri-metadata-injection-2.2.0
@@ -1213,7 +1213,7 @@ metadata:
     helm.sh/chart: kube-state-metrics-2.13.2
     app.kubernetes.io/instance: nri-bundle
   name: nri-bundle-kube-state-metrics
-  namespace: newrelic
+  namespace: default
 imagePullSecrets:
   []
 ---
@@ -1228,7 +1228,7 @@ metadata:
     app.kubernetes.io/instance: nri-bundle
     app.kubernetes.io/version: "1.7.0"
   name: nri-bundle-nri-kube-events
-  namespace: newrelic
+  namespace: default
   annotations:
     null
 ---
@@ -1237,7 +1237,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: nri-bundle-nri-metadata-injection-admission
-  namespace: newrelic
+  namespace: default
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
@@ -1252,7 +1252,7 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  namespace: newrelic
+  namespace: default
   labels:
     app: newrelic-infrastructure
     chart: newrelic-infrastructure-2.8.0
@@ -1265,7 +1265,7 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  namespace: newrelic
+  namespace: default
   labels:
     app: newrelic-logging
     chart: newrelic-logging-1.10.8
