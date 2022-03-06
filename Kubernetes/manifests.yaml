@@ -33,7 +33,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: sky45/emailservice
+        image: sky45/emailservice:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -89,7 +89,7 @@ spec:
       serviceAccountName: default
       containers:
         - name: server
-          image: sky45/checkoutservice
+          image: sky45/checkoutservice:latest
           imagePullPolicy: Always
           ports:
           - containerPort: 5050
@@ -160,7 +160,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: sky45/recommendationservice
+        image: sky45/recommendationservice:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -222,7 +222,7 @@ spec:
       serviceAccountName: default
       containers:
         - name: server
-          image: sky45/frontend
+          image: sky45/frontend:latest
           imagePullPolicy: Always
           ports:
           - containerPort: 8080
@@ -322,7 +322,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: sky45/paymentservice
+        image: sky45/paymentservice:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 50051
@@ -379,7 +379,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: sky45/productcatalogservice
+        image: sky45/productcatalogservice:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 3550
@@ -438,7 +438,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: sky45/cartservice
+        image: sky45/cartservice:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 7070
@@ -512,7 +512,7 @@ spec:
           value: "frontend:80"
       containers:
       - name: main
-        image: sky45/loadgenerator
+        image: sky45/loadgenerator:latest
         imagePullPolicy: Always
         env:
         - name: FRONTEND_ADDR
@@ -544,7 +544,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: sky45/currencyservice
+        image: sky45/currencyservice:latest
         imagePullPolicy: Always
         ports:
         - name: grpc
@@ -601,7 +601,7 @@ spec:
       serviceAccountName: default
       containers:
       - name: server
-        image: sky45/shippingservice
+        image: sky45/shippingservice:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 50051
@@ -714,7 +714,7 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: sky45/adservice
+        image: sky45/adservice:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 9555
