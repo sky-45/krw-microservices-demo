@@ -34,6 +34,7 @@ spec:
       containers:
       - name: server
         image: sky45/emailservice
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
@@ -89,6 +90,7 @@ spec:
       containers:
         - name: server
           image: sky45/checkoutservice
+          imagePullPolicy: Always
           ports:
           - containerPort: 5050
           readinessProbe:
@@ -159,6 +161,7 @@ spec:
       containers:
       - name: server
         image: sky45/recommendationservice
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         readinessProbe:
@@ -220,6 +223,7 @@ spec:
       containers:
         - name: server
           image: sky45/frontend
+          imagePullPolicy: Always
           ports:
           - containerPort: 8080
           readinessProbe:
@@ -319,6 +323,7 @@ spec:
       containers:
       - name: server
         image: sky45/paymentservice
+        imagePullPolicy: Always
         ports:
         - containerPort: 50051
         env:
@@ -375,6 +380,7 @@ spec:
       containers:
       - name: server
         image: sky45/productcatalogservice
+        imagePullPolicy: Always
         ports:
         - containerPort: 3550
         env:
@@ -433,6 +439,7 @@ spec:
       containers:
       - name: server
         image: sky45/cartservice
+        imagePullPolicy: Always
         ports:
         - containerPort: 7070
         env:
@@ -506,6 +513,7 @@ spec:
       containers:
       - name: main
         image: sky45/loadgenerator
+        imagePullPolicy: Always
         env:
         - name: FRONTEND_ADDR
           value: "frontend:80"
@@ -537,6 +545,7 @@ spec:
       containers:
       - name: server
         image: sky45/currencyservice
+        imagePullPolicy: Always
         ports:
         - name: grpc
           containerPort: 7000
@@ -593,6 +602,7 @@ spec:
       containers:
       - name: server
         image: sky45/shippingservice
+        imagePullPolicy: Always
         ports:
         - containerPort: 50051
         env:
@@ -705,6 +715,7 @@ spec:
       containers:
       - name: server
         image: sky45/adservice
+        imagePullPolicy: Always
         ports:
         - containerPort: 9555
         env:
