@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+const newrelic = require('newrelic');
 if(process.env.DISABLE_PROFILER) {
   console.log("Profiler disabled.")
 }
@@ -49,7 +49,6 @@ else {
   });
 }
 
-require('newrelic');
 const path = require('path');
 const grpc = require('@grpc/grpc-js');
 const pino = require('pino');
@@ -143,8 +142,9 @@ function convert (call, callback) {
       result.units = Math.floor(result.units);
       result.nanos = Math.floor(result.nanos);
       result.currency_code = request.to_code;
-
+      
       logger.info(`conversion request successful`);
+      newrelic.setTransactionName("conversion")
       callback(null, result);
     });
   } catch (err) {

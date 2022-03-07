@@ -8,6 +8,8 @@ require (
 	contrib.go.opencensus.io/exporter/stackdriver v0.13.10
 	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.1.2
+	github.com/newrelic/go-agent/v3 v3.15.2
+	github.com/newrelic/go-agent/v3/integrations/nrgrpc v1.3.1
 	github.com/sirupsen/logrus v1.8.1
 	go.opencensus.io v0.23.0
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f

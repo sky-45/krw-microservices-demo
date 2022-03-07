@@ -33,6 +33,10 @@ import (
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/trace"
 	"google.golang.org/grpc"
+	// new relic imports
+	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
+	newrelic "github.com/newrelic/go-agent/v3/newrelic"
+	
 )
 
 const (
@@ -81,6 +85,20 @@ type frontendServer struct {
 }
 
 func main() {
+	
+	app, err := newrelic.NewApplication(
+		newrelic.ConfigAppName("frontend"),
+		newrelic.ConfigLicense("2b17bcb2db4879182b55db23f1d9311c0afdNRAL"),
+		newrelic.ConfigDistributedTracerEnabled(true),
+	)
+	if nil != err {
+		panic(err)
+	}
+
+	txn := app.StartTransaction("main")
+	defer txn.End()
+	
+	
 	ctx := context.Background()
 	log := logrus.New()
 	log.Level = logrus.DebugLevel
@@ -152,6 +170,8 @@ func main() {
 
 	log.Infof("starting server on " + addr + ":" + srvPort)
 	log.Fatal(http.ListenAndServe(addr+":"+srvPort, handler))
+
+	
 }
 
 func initJaegerTracing(log logrus.FieldLogger) {
@@ -267,7 +287,11 @@ func mustConnGRPC(ctx context.Context, conn **grpc.ClientConn, addr string) {
 	defer cancel()
 	*conn, err = grpc.DialContext(ctx, addr,
 		grpc.WithInsecure(),
-		grpc.WithStatsHandler(&ocgrpc.ClientHandler{}))
+		grpc.WithStatsHandler(&ocgrpc.ClientHandler{}),
+		// Add the New Relic gRPC client instrumentation
+		grpc.WithUnaryInterceptor(nrgrpc.UnaryClientInterceptor),
+		grpc.WithStreamInterceptor(nrgrpc.StreamClientInterceptor),
+	)
 	if err != nil {
 		panic(errors.Wrapf(err, "grpc: failed to connect %s", addr))
 	}

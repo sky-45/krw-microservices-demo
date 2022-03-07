@@ -43,6 +43,10 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	// new relic imports
+	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
+	newrelic "github.com/newrelic/go-agent/v3/newrelic"
+	
 )
 
 var (
@@ -75,6 +79,16 @@ func init() {
 }
 
 func main() {
+
+	app, err := newrelic.NewApplication(
+		newrelic.ConfigAppName("productcatalogservice"),
+		newrelic.ConfigLicense("2b17bcb2db4879182b55db23f1d9311c0afdNRAL"),
+		newrelic.ConfigDistributedTracerEnabled(true),
+	)
+	if nil != err {
+		panic(err)
+	}
+
 	if os.Getenv("DISABLE_TRACING") == "" {
 		log.Info("Tracing enabled.")
 		go initTracing()
@@ -123,11 +137,12 @@ func main() {
 		port = os.Getenv("PORT")
 	}
 	log.Infof("starting grpc server at :%s", port)
-	run(port)
+	run(port,app)
 	select {}
 }
 
-func run(port string) string {
+func run(port string,app *newrelic.Application) string {
+
 	l, err := net.Listen("tcp", fmt.Sprintf(":%s", port))
 	if err != nil {
 		log.Fatal(err)
@@ -138,7 +153,10 @@ func run(port string) string {
 		srv = grpc.NewServer(grpc.StatsHandler(&ocgrpc.ServerHandler{}))
 	} else {
 		log.Info("Stats disabled.")
-		srv = grpc.NewServer()
+		srv = grpc.NewServer(
+			grpc.UnaryInterceptor(nrgrpc.UnaryServerInterceptor(app)),
+			grpc.StreamInterceptor(nrgrpc.StreamServerInterceptor(app)),
+		)
 	}
 
 	svc := &productCatalog{}

@@ -36,6 +36,9 @@ import (
 	pb "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/genproto"
 	money "github.com/GoogleCloudPlatform/microservices-demo/src/checkoutservice/money"
 	healthpb "google.golang.org/grpc/health/grpc_health_v1"
+	// new relic imports
+	"github.com/newrelic/go-agent/v3/integrations/nrgrpc"
+	newrelic "github.com/newrelic/go-agent/v3/newrelic"
 )
 
 const (
@@ -69,6 +72,17 @@ type checkoutService struct {
 }
 
 func main() {
+
+	app, err := newrelic.NewApplication(
+		newrelic.ConfigAppName("checkoutservice"),
+		newrelic.ConfigLicense("2b17bcb2db4879182b55db23f1d9311c0afdNRAL"),
+		newrelic.ConfigDistributedTracerEnabled(true),
+	)
+	if nil != err {
+		panic(err)
+	}
+
+
 	if os.Getenv("DISABLE_TRACING") == "" {
 		log.Info("Tracing enabled.")
 		go initTracing()
@@ -109,7 +123,10 @@ func main() {
 		srv = grpc.NewServer(grpc.StatsHandler(&ocgrpc.ServerHandler{}))
 	} else {
 		log.Info("Stats disabled.")
-		srv = grpc.NewServer()
+		srv = grpc.NewServer(
+			grpc.UnaryInterceptor(nrgrpc.UnaryServerInterceptor(app)),
+			grpc.StreamInterceptor(nrgrpc.StreamServerInterceptor(app)),
+		)
 	}
 	pb.RegisterCheckoutServiceServer(srv, svc)
 	healthpb.RegisterHealthServer(srv, svc)
